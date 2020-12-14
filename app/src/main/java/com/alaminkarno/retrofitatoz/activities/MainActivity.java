@@ -1,10 +1,16 @@
-package com.alaminkarno.retrofitatoz;
+package com.alaminkarno.retrofitatoz.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.alaminkarno.retrofitatoz.API.ApiClient;
+import com.alaminkarno.retrofitatoz.R;
+import com.alaminkarno.retrofitatoz.interfaces.RetrofitInterface;
+import com.alaminkarno.retrofitatoz.model.Comment;
+import com.alaminkarno.retrofitatoz.model.Post;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,8 +38,49 @@ public class MainActivity extends AppCompatActivity {
 
         //getPost();
 
-        getComment();
+        //getComment();
+        
+        createPost();
 
+    }
+
+    private void createPost() {
+        
+        Post post = new Post(30,"title","this is body");
+
+        Map<String,String> fields = new HashMap<>();
+        fields.put("userId","25");
+        fields.put("body","This is a body");
+
+        Call<Post> call = retrofitInterface.createPost(fields);
+        
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if(!response.isSuccessful()){
+                    textView.setText("Error "+response.code());
+                    return;
+                }
+                
+                Post post_response = response.body();
+
+                String content = "";
+
+                content += "Success: "+response.code()+" \n";
+                content += "ID: "+post_response.getId() +" \n";
+                content += "User ID : "+post_response.getUserId() +" \n";
+                content += "Title : "+post_response.getTitle() +" \n";
+                content += "Body : "+post_response.getBody() +" \n\n";
+                
+                textView.setText(content);
+                
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "error: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getComment() {

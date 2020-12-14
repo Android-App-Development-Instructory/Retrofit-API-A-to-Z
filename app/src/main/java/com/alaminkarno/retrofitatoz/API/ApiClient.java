@@ -1,4 +1,6 @@
-package com.alaminkarno.retrofitatoz;
+package com.alaminkarno.retrofitatoz.API;
+
+import com.alaminkarno.retrofitatoz.interfaces.RetrofitInterface;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

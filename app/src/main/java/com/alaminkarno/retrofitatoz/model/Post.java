@@ -1,9 +1,9 @@
-package com.alaminkarno.retrofitatoz;
+package com.alaminkarno.retrofitatoz.model;
 
 public class Post {
 
     private int userId;
-    private int id;
+    private Integer id;
     private String title;
     private String body;
 
@@ -13,6 +13,12 @@ public class Post {
     public Post(int userId, int id, String title, String body) {
         this.userId = userId;
         this.id = id;
+        this.title = title;
+        this.body = body;
+    }
+
+    public Post(int userId, String title, String body) {
+        this.userId = userId;
         this.title = title;
         this.body = body;
     }

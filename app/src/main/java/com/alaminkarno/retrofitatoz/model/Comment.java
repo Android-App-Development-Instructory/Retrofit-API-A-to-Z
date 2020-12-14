@@ -1,4 +1,4 @@
-package com.alaminkarno.retrofitatoz;
+package com.alaminkarno.retrofitatoz.model;
 
 public class Comment {
     private int postId;
