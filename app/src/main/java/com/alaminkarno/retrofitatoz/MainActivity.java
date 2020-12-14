@@ -7,7 +7,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView textView;
     List<Post> postList;
+    List<Comment> comments;
     RetrofitInterface retrofitInterface;
 
     @Override
@@ -27,15 +30,55 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
-        getPost();
+        //getPost();
 
+        getComment();
+
+    }
+
+    private void getComment() {
+
+        Call<List<Comment>> call = retrofitInterface.getComment("posts/5/comments");
+
+        call.enqueue(new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+
+                if(!response.isSuccessful()){
+                    textView.setText("Error: "+response.code());
+
+                    return;
+                }
+
+                comments = response.body();
+
+                for(Comment comment : comments){
+                    String content = "";
+                    content += "Post ID: "+comment.getPostId()+" \n";
+                    content += "ID: "+comment.getId()+" \n";
+                    content += "Name: "+comment.getName()+" \n";
+                    content += "Email: "+comment.getEmail()+" \n";
+                    content += "Body: "+comment.getBody()+" \n\n";
+
+                    textView.append(content);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Error: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getPost() {
 
-        retrofitInterface = ApiClient.getInstance().getApi();
+        Map<String,String> parameters = new HashMap<>();
+        parameters.put("userId","1");
+        parameters.put("_sort","id");
+        parameters.put("_order","desc");
 
-        Call<List<Post>> call = retrofitInterface.getPost();
+        Call<List<Post>> call = retrofitInterface.getPost(parameters);
 
         call.enqueue(new Callback<List<Post>>() {
             @Override
@@ -73,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         textView = findViewById(R.id.textView);
         postList = new ArrayList<>();
+
+        retrofitInterface = ApiClient.getInstance().getApi();
     }
 
 
