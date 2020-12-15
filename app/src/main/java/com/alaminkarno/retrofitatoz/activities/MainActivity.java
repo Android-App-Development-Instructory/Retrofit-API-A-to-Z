@@ -40,8 +40,65 @@ public class MainActivity extends AppCompatActivity {
 
         //getComment();
         
-        createPost();
+        //createPost();
 
+        //updatePost();
+
+        deletePost();
+
+    }
+
+    private void deletePost() {
+
+        Call<Void> call = retrofitInterface.deletePost(3);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                textView.setText("Response Code: "+response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Error: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updatePost() {
+
+        Post post = new Post(12,null,"New Body");
+
+        Call<Post> call = retrofitInterface.patchPost(5,post);
+
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+
+                if(!response.isSuccessful()){
+                    textView.setText("Error: "+response.code());
+                    return;
+                }
+
+               Post postUpdate = response.body();
+
+                String content = "";
+
+                content += "SMS: "+response.code()+" \n";
+                content += "ID: "+postUpdate.getId() +" \n";
+                content += "User ID : "+postUpdate.getUserId() +" \n";
+                content += "Title : "+postUpdate.getTitle() +" \n";
+                content += "Body : "+postUpdate.getBody() +" \n\n";
+
+                textView.setText(content);
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+
+                Toast.makeText(MainActivity.this, "Error: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void createPost() {
